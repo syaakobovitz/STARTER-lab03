@@ -189,6 +189,7 @@ IntBST::Node* IntBST::getNodeFor(int value, Node* n) const{
     if(value> n->info){
         return getNodeFor(value ,n->right);
     }
+    return nullptr;
     
 }
 
@@ -203,30 +204,27 @@ bool IntBST::contains(int value) const {
 
 // returns the Node containing the predecessor of the given value
 IntBST::Node* IntBST::getPredecessorNode(int value) const{
-    Node * n= getNodeFor(value,root); 
-    if(!n){
-        return nullptr;
-    }
-    if(n->left){
-        n= n->left;
-        while(n->right){
-            n=n->right;
+
+        Node* n = getNodeFor(value, root);
+    if (!n) return nullptr;
+
+    // case 1: left subtree exists → go rightmost of left
+    if (n->left) {
+        n = n->left;
+        while (n->right) {
+            n = n->right;
         }
         return n;
     }
-    
-        while(n->parent&& n->parent->right!=n){
-            n=n->parent;
-        }
-        if(n->parent){
-            if(n->parent->right==n){
-                return n;
-        }   
-        }
-        return nullptr;
-     
+
+    // case 2: go up until coming from right child
+    while (n->parent && n == n->parent->left) {
+        n = n->parent;
     }
-    //return NULL; // REPLACE THIS NON-SOLUTION
+
+    return n->parent;
+}
+    
 
 
 // returns the predecessor value of the given value or 0 if there is none
